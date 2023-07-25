@@ -45,3 +45,4 @@ async def process_json(item: Item):
 
     # Return the JSON response
     return response
+

@@ -46,7 +46,7 @@ def extract_ne_counts(full_text, span=span):
         text (str): Text in which to search for people and locations.
         span (int, optional): Search range to both sides of name. Defaults to config.span.
     Returns:
-        _type_: _description_
+        list: Named Entity count reponse.
     """
 
     # Trim and parse text

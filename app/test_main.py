@@ -1,11 +1,10 @@
 from fastapi.testclient import TestClient
 from pydantic import BaseModel, Extra
 
-import pytest
-
 from app.main import app
 from app.config import correct_response_people
 
+import pytest
 
 class Item(BaseModel):
     URL: str

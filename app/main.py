@@ -11,11 +11,22 @@ class Item(BaseModel):
     URL: str
 
     class Config:
-        extra = Extra.allow  # Allow unknown keys in the JSON payload
+        extra = Extra.allow  # allow unknown keys in the JSON payload
 
 
 @app.post("/fetch_text/")
 async def process_json(item: Item):
+    """Processing json paylaod for loading text.
+
+    Args:
+        item (Item): Arguments
+
+    Raises:
+        HTTPException: In case URL cannot be found.
+
+    Returns:
+        dict: Reponse containing people and location counts.
+    """
 
     # Fetch the text from the provided URL
     response = requests.get(item.URL)
@@ -23,7 +34,7 @@ async def process_json(item: Item):
         raise HTTPException(
             status_code=400, detail="Failed to fetch text content from the URL")
 
-    final_counts = ner.extract_names_and_counts(response.text)
+    final_counts = ner.extract_ne_counts(response.text)
 
     # Combine the text content and metadata fields into a response JSON object
     response = {
@@ -34,7 +45,3 @@ async def process_json(item: Item):
 
     # Return the JSON response
     return response
-
-
-# curl -X POST -H "Content-Type: application/json" -d '{"URL": "https://www.gutenberg.org/cache/epub/345/pg345.txt", "author": "Bram Stoker", "title": "Dracula"}' http://127.0.0.1:8^C0/fetch_text/
-# curl -X POST -H "Content-Type: application/json" -d '{"URL": "https://www.guwtenberg.org/cache/epub/345/pg345.txt", "author": "Bram Stoker", "title": "Dracula"}' http://127.0.0.1:8^C0/fetch_text/

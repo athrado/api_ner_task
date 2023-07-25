@@ -3,7 +3,8 @@ from pydantic import BaseModel, Extra
 
 import pytest
 
-from .main import app
+from app.main import app
+from app.config import correct_response_people
 
 
 class Item(BaseModel):
@@ -17,20 +18,32 @@ class Item(BaseModel):
 client = TestClient(app)
 
 
-def test_fetch_text_success():
-    # Provide a sample URL that returns a known text content
-    test_url = "https://www.gutenberg.org/cache/epub/2447/pg2447.txt"
+def test_fetch_text_success_gutenberg():
+    """Test: Provide a sample Gutenberg URL."""
+
+    test_url = "https://github.com/athrado/api_task/blob/main/sample_text.txt"
     response = client.post(
         "/fetch_text/", json={"URL": test_url, "author": "John Doe", })
 
     assert response.status_code == 200
     assert response.json()["URL"] == test_url
     assert response.json()["author"] == "John Doe"
-   # assert "people" in response.json()
+
+
+def test_fetch_toy_example():
+    """Test: Provide a sample URL for toy example that returns a known text content."""
+
+    test_url = "https://raw.githubusercontent.com/athrado/api_task/main/sample_text.txt?raw=True"
+
+    response = client.post(
+        "/fetch_text/", json={"URL": test_url, "author": "ChatGPT", "title": "Travel Stories"})
+    assert response.json()['title'] == 'Travel Stories'
+    assert response.json()['people'] == correct_response_people
 
 
 def test_fetch_text_failed():
-    # Provide a sample URL that returns an error (404, for example)
+    """Test: Provide a sample URL that returns an error (404, for example)"""
+
     test_url = "https://example.com/non_existent_page"
     response = client.post("/fetch_text/", json={"URL": test_url})
 
@@ -40,6 +53,4 @@ def test_fetch_text_failed():
 
 
 if __name__ == "__main__":
-    # You can run the tests using pytest or any other testing framework you prefer
-
     pytest.main(["-v", __file__])

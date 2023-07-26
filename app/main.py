@@ -26,7 +26,13 @@ class Reponse(BaseModel):
 
 @app.post("/get_text_and_ents/", response_model=Reponse)
 async def extract_named_entities(user_in: UserIn):
-    """Processing json paylaod for loading text.
+    """Process json payload containing URL to text:
+
+    - retrieve text from URL
+    - remove header/footer/tags for Gutenberg Project texts
+    - find names and locations using spaCy's NER 
+    - count names and mentions of locations within certain range
+    - create response in desired format
 
     Args:
         user_in (Item): User input as payload arguments.

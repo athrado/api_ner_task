@@ -1,6 +1,4 @@
 from fastapi.testclient import TestClient
-from pydantic import BaseModel, Extra
-
 import pytest
 
 from app.main import app

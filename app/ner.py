@@ -49,7 +49,9 @@ def extract_ne_counts(full_text, span=span):
 
     Args:
         text (str): Text in which to search for people and locations.
-        span (int, optional): Search range to both sides of name. Defaults to config.span.
+        span (int, optional): Search range to both sides of name. 
+            Defaults to config.span.
+            
     Returns:
         list: Named entity count reponse.
     """
@@ -86,8 +88,10 @@ def extract_ne_counts(full_text, span=span):
                   for person in person_loc}
 
     # Sort locations by counts and re-format
-    loc_count = {ent_text: [{'name': k, 'count': v} for k, v in sorted(Counter(sorted(person_loc[ent_text])).items(), key=lambda item: item[1], reverse=True)]
-                 for ent_text in person_loc.keys()}
+    loc_count = {ent_text: [{'name': k, 'count': v} 
+                            for k, v in sorted(Counter(sorted(person_loc[ent_text])).items(), 
+                                               key=lambda item: item[1], reverse=True)] 
+                                               for ent_text in person_loc.keys()}
 
     # Sort people by occurences
     person_count = dict(

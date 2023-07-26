@@ -1,10 +1,11 @@
 from fastapi.testclient import TestClient
 from pydantic import BaseModel, Extra
 
+import pytest
+
 from app.main import app
 from app.config import correct_response_people
 
-import pytest
 
 class Item(BaseModel):
     URL: str
@@ -20,7 +21,7 @@ client = TestClient(app)
 def test_fetch_text_success_gutenberg():
     """Test: Provide a sample Gutenberg URL."""
 
-    test_url = "https://github.com/athrado/api_task/blob/main/sample_text.txt"
+    test_url = "https://www.gutenberg.org/cache/epub/64317/pg64317.txt"
     response = client.post(
         "/fetch_text/", json={"URL": test_url, "author": "John Doe", })
 

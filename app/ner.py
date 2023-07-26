@@ -24,8 +24,14 @@ def extract_content(full_text):
         start_seq = r"\*\*\*\s+START.*?\*\*\*"
         end_seq = r"\*\*\*\s+END.*?\*\*\*"
 
+        # Extract text between header and footer markers
         content_text = re.search(
-            '{}(.*){}'.format(start_seq, end_seq), full_text, re.DOTALL).group(1).strip()
+            '{}(.*){}'.format(start_seq, end_seq), full_text, re.DOTALL)
+
+        if content_text is None:
+            return full_text
+
+        content_text = content_text.group(1).strip()
 
         # Minor tag cleaning
         content_text = re.sub('_', ' ', content_text)
@@ -39,20 +45,20 @@ def extract_content(full_text):
 
 
 def extract_ne_counts(full_text, span=span):
-    """_sumDetect names and locations mentioned within given text span.mary_
+    """Detect names and locations mentioned within given text span.
 
     Args:
         text (str): Text in which to search for people and locations.
         span (int, optional): Search range to both sides of name. Defaults to config.span.
     Returns:
-        list: Named Entity count reponse.
+        list: Named entity count reponse.
     """
 
     # Trim and parse text
     content_text = extract_content(full_text)
     doc = nlp(content_text)
 
-    # Find people in text
+    # Find people entities in text
     people = [(ent.text.strip(), ent.start, ent.end)
               for ent in doc.ents if ent.label_ == 'PERSON']
 
@@ -62,8 +68,10 @@ def extract_ne_counts(full_text, span=span):
     # Search span to left and right of people for locations
     for (person, start, end) in people:
 
-        # Search span based on person position and text limits
+        # Set search span based on person position and text limits:
+        # Use first word if span goes beyond beginning of text
         start_point = max(0, start-span)
+        # Use last word if span goes beyond end of text
         end_point = min(end+span, len(doc))
 
         locs = [
@@ -73,11 +81,11 @@ def extract_ne_counts(full_text, span=span):
         person_count[person] += 1
         person_loc[person] += locs
 
-    # Remove location that are counted multiple times (same start token)
+    # Remove locations that are counted multiple times (same start token)
     person_loc = {person: [text for (text, _) in list(set(person_loc[person]))]
                   for person in person_loc}
 
-    # Sort by counts and re-format
+    # Sort locations by counts and re-format
     loc_count = {ent_text: [{'name': k, 'count': v} for k, v in sorted(Counter(sorted(person_loc[ent_text])).items(), key=lambda item: item[1], reverse=True)]
                  for ent_text in person_loc.keys()}
 

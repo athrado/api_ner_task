@@ -4,32 +4,42 @@ import requests
 
 import app.ner as ner
 
-app = FastAPI()
+app = FastAPI(title='NER API',
+              description='''Extract Named Entities from given URL 
+              and return people with location mentions.''')
 
 
-class Item(BaseModel):
+class UserIn(BaseModel):
     URL: str
 
     class Config:
         extra = Extra.allow  # allow unknown keys in the JSON payload
 
 
-@app.post("/get_text/")
-async def process_json(item: Item):
+class Reponse(BaseModel):
+    URL: str
+    people: list
+
+    class Config:
+        extra = Extra.allow  # allow unknown keys in the JSON payload
+
+
+@app.post("/get_text_and_ents/", response_model=Reponse)
+async def extract_named_entities(user_in: UserIn):
     """Processing json paylaod for loading text.
 
     Args:
-        item (Item): Arguments
+        user_in (Item): User input as payload arguments.
 
     Raises:
         HTTPException: In case URL cannot be found.
 
     Returns:
-        dict: Reponse containing people and location counts.
+        json: Reponse containing people and location counts.
     """
 
     # Fetch the text from the provided URL
-    response = requests.get(item.URL)
+    response = requests.get(user_in.URL)
     if response.status_code != 200:
         raise HTTPException(
             status_code=400, detail="Failed to fetch text content from the URL")
@@ -38,8 +48,7 @@ async def process_json(item: Item):
 
     # Combine the text content and metadata fields into a response JSON object
     response = {
-        "URL": item.URL,
-        **item.dict(exclude={'URL'}),
+        **user_in.dict(),
         "people": final_counts
     }
 

@@ -1,4 +1,4 @@
-# Response for sample_text.txt when testing
+# Correct response for sample_text.txt used for testing
 correct_response_people = [
     {
         "name": "Sarah",

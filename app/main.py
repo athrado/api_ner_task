@@ -5,8 +5,8 @@ import requests
 import app.ner as ner
 
 app = FastAPI(title='NER API',
-              description='''Extract Named Entities from given URL 
-              and return people with location mentions.''')
+              description='''Extract name entities from given URL 
+              and return people and their counts for location mentions.''')
 
 
 class UserIn(BaseModel):
@@ -52,7 +52,7 @@ async def extract_named_entities(user_in: UserIn):
 
     final_counts = ner.extract_ne_counts(response.text)
 
-    # Combine the text content and metadata fields into a response JSON object
+    # Combine the NE counts and metadata fields into a response JSON object
     response = {
         **user_in.dict(),
         "people": final_counts

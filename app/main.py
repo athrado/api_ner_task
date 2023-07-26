@@ -14,7 +14,7 @@ class Item(BaseModel):
         extra = Extra.allow  # allow unknown keys in the JSON payload
 
 
-@app.post("/fetch_text/")
+@app.post("/get_text/")
 async def process_json(item: Item):
     """Processing json paylaod for loading text.
 

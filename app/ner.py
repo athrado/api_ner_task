@@ -44,7 +44,7 @@ def extract_content(full_text):
         return full_text
 
 
-def extract_ne_counts(full_text, span=span):
+def extract_ne_counts(full_text, span=span, merge_appositions=True):
     """Detect names and locations mentioned within given text span.
 
     Args:
@@ -66,6 +66,7 @@ def extract_ne_counts(full_text, span=span):
 
     person_loc = defaultdict(list)
     person_count = defaultdict(int)
+    area_dict = defaultdict(dict)
 
     # Search span to left and right of people for locations
     for (person, start, end) in people:
@@ -77,21 +78,66 @@ def extract_ne_counts(full_text, span=span):
         end_point = min(end+span, len(doc))
 
         locs = [
-            (ent.text, ent.start) for ent in doc[start_point:end_point].ents
+            (ent.text, ent.start, ent.end) for ent in doc[start_point:end_point].ents
             if ent.label_ == 'GPE']
+        
+        # ----------------------
 
-        person_count[person] += 1
+        # Little addition to handle instances like "Rome, Italy" or "Chigaco, Illinois"
+        if merge_appositions:
+        
+            drops = []
+            
+            for i in range(len(locs)-1):
+                first_ent_end = locs[i][2]
+                sec_ent_start = locs[i+1][1]
+                    
+                # If the two locations are next to each other, seperated by one word
+                if (first_ent_end + 1 == sec_ent_start):
+
+                    # And if they are seperated by a commma
+                    if (doc[first_ent_end:sec_ent_start][0].text == ','):
+
+                        # And if it is not an enumeration (looking at next word)
+                        if (doc[locs[i+1][2]+1:][0].text not in ['and', 'or', ',']):
+
+                            # Use the first location mention only,
+                            # drop the second, but keep in area_dict
+                            locs[i] = (locs[i][0], first_ent_end, locs[i+1][2])
+                            drops.append(i+1)
+                            area_dict[person][locs[i][0]] = locs[i+1][0]
+
+            # Drop the second locations to avoid redudnancy
+            locs = [loc for i, loc in enumerate(locs) if i not in drops]    
+
+        # ---------------------- 
+        
         person_loc[person] += locs
 
+
     # Remove locations that are counted multiple times (same start token)
-    person_loc = {person: [text for (text, _) in list(set(person_loc[person]))]
+    person_loc = {person: [loc_name for (loc_name, _, _) in list(set(person_loc[person]))]
                   for person in person_loc}
 
     # Sort locations by counts and re-format
-    loc_count = {ent_text: [{'name': k, 'count': v} 
-                            for k, v in sorted(Counter(sorted(person_loc[ent_text])).items(), 
+    loc_count = {person: [{'name': k, 'count': v}
+                            for k, v in sorted(Counter(sorted(person_loc[person])).items(), 
                                                key=lambda item: item[1], reverse=True)] 
-                                               for ent_text in person_loc.keys()}
+                                               for person in person_loc.keys()}
+    
+
+    # Add the second location as additional area information
+    if merge_appositions:
+        for pers in area_dict.keys():
+            if pers in loc_count.keys():
+                loc_count[pers] = [{**loc_counts, 'area':area_dict[pers][loc_counts['name']]} 
+                                if loc_counts['name'] in area_dict[pers].keys() 
+                                else loc_counts 
+                                for loc_counts in loc_count[pers]]
+                
+    
+    # Sum up all the location counts
+    person_count = {person : sum([place.get('count', 0) for place in loc_count[person]]) for person in person_loc.keys()}
 
     # Sort people by occurences
     person_count = dict(
@@ -101,5 +147,5 @@ def extract_ne_counts(full_text, span=span):
     ner_count_response = [{'name': person,
                            'count': person_count[person],
                            'assosciated_places':loc_count[person]} for person in person_count]
-
+    
     return ner_count_response

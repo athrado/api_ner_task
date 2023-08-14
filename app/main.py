@@ -4,28 +4,32 @@ import requests
 
 import app.ner as ner
 
+# Create instance
 app = FastAPI(title='NER API',
               description='''Extract name entities from given URL 
               and return people and their counts for location mentions.''')
 
+class UserIn(BaseModel): 
+# Data model for request body
 
-class UserIn(BaseModel):
     URL: str
 
     class Config:
-        extra = Extra.allow  # allow unknown keys in the JSON payload
+        extra = Extra.allow  # allow unknown keys
 
+class Reponse(BaseModel): 
+# Data model for response body
 
-class Reponse(BaseModel):
     URL: str
     people: list
 
     class Config:
-        extra = Extra.allow  # allow unknown keys in the JSON payload
+        extra = Extra.allow  # allow unknown keys
 
 
-@app.post("/get_text_and_ents/", response_model=Reponse)
-async def extract_named_entities(user_in: UserIn):
+@app.post("/get_text_and_ents/", response_model=Reponse) 
+async def extract_named_entities(user_in: UserIn, 
+                                 merge_appos: bool = False): # path operation function, executed whenever request to path with POST
     """Process json payload containing URL to text:
 
     - retrieve text from URL
@@ -50,13 +54,13 @@ async def extract_named_entities(user_in: UserIn):
         raise HTTPException(
             status_code=400, detail="Failed to fetch text content from the URL")
 
-    final_counts = ner.extract_ne_counts(response.text)
+    final_counts = ner.extract_ne_counts(response.text, merge_appositions=merge_appos)
 
     # Combine the NE counts and metadata fields into a response JSON object
-    response = {
+    response_body = {
         **user_in.dict(),
         "people": final_counts
     }
 
     # Return the JSON response
-    return response
+    return response_body

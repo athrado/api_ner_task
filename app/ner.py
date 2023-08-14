@@ -44,13 +44,15 @@ def extract_content(full_text):
         return full_text
 
 
-def extract_ne_counts(full_text, span=span, merge_appositions=True):
+def extract_ne_counts(full_text, span=span, merge_appositions=False):
     """Detect names and locations mentioned within given text span.
 
     Args:
         text (str): Text in which to search for people and locations.
         span (int, optional): Search range to both sides of name. 
             Defaults to config.span.
+        merge_appositions (bool): Merge location appositions like Paris, France
+            into one count with area specification. Defaults to False.
             
     Returns:
         list: Named entity count reponse.
@@ -137,7 +139,9 @@ def extract_ne_counts(full_text, span=span, merge_appositions=True):
                 
     
     # Sum up all the location counts
-    person_count = {person : sum([place.get('count', 0) for place in loc_count[person]]) for person in person_loc.keys()}
+    person_count = {person : sum([place.get('count', 0) 
+                                  for place in loc_count[person]]) 
+                                  for person in person_loc.keys()}
 
     # Sort people by occurences
     person_count = dict(
@@ -146,6 +150,7 @@ def extract_ne_counts(full_text, span=span, merge_appositions=True):
     # Prepare output response
     ner_count_response = [{'name': person,
                            'count': person_count[person],
-                           'assosciated_places':loc_count[person]} for person in person_count]
+                           'assosciated_places':loc_count[person]} 
+                           for person in person_count]
     
     return ner_count_response

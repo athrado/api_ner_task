@@ -27,9 +27,10 @@ class Reponse(BaseModel):
         extra = Extra.allow  # allow unknown keys
 
 
+# path operation function, executed whenever request to this path with POST
 @app.post("/get_text_and_ents/", response_model=Reponse) 
 async def extract_named_entities(user_in: UserIn, 
-                                 merge_appos: bool = False): # path operation function, executed whenever request to path with POST
+                                 merge_appos: bool = False): 
     """Process json payload containing URL to text:
 
     - retrieve text from URL
@@ -37,9 +38,11 @@ async def extract_named_entities(user_in: UserIn,
     - find names and locations using spaCy's NER 
     - count names and mentions of locations within certain range
     - create response in desired format
+    - if activated, merge location appositions into one count with area specification
 
     Args:
         user_in (Item): User input as payload arguments.
+        merge_appos (bool): Merge location appositons like Paris, France. Defaults to False.
 
     Raises:
         HTTPException: In case URL cannot be found.

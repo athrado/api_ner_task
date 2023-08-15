@@ -23,30 +23,8 @@ correct_response_people = [
       ]
     },
     {
-      "name": "Michaela",
-      "count": 5,
-      "assosciated_places": [
-        {
-          "name": "Spain",
-          "count": 2
-        },
-        {
-          "name": "Barcelona",
-          "count": 1
-        },
-        {
-          "name": "Dubai",
-          "count": 1
-        },
-        {
-          "name": "United Arab Emirates",
-          "count": 1
-        }
-      ]
-    },
-    {
       "name": "Carlos",
-      "count": 5,
+      "count": 4,
       "assosciated_places": [
         {
           "name": "Barcelona",
@@ -71,8 +49,48 @@ correct_response_people = [
       ]
     },
     {
+      "name": "Ahmed",
+      "count": 2,
+      "assosciated_places": [
+        {
+          "name": "Barcelona",
+          "count": 1
+        },
+        {
+          "name": "Egypt",
+          "count": 1
+        },
+        {
+          "name": "Kenya",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "Michaela",
+      "count": 2,
+      "assosciated_places": [
+        {
+          "name": "Spain",
+          "count": 2
+        },
+        {
+          "name": "Barcelona",
+          "count": 1
+        },
+        {
+          "name": "Dubai",
+          "count": 1
+        },
+        {
+          "name": "United Arab Emirates",
+          "count": 1
+        }
+      ]
+    },
+    {
       "name": "Li Wei",
-      "count": 5,
+      "count": 2,
       "assosciated_places": [
         {
           "name": "Rome",
@@ -91,24 +109,6 @@ correct_response_people = [
           "count": 1
         }
       ]
-    },
-    {
-      "name": "Ahmed",
-      "count": 3,
-      "assosciated_places": [
-        {
-          "name": "Barcelona",
-          "count": 1
-        },
-        {
-          "name": "Egypt",
-          "count": 1
-        },
-        {
-          "name": "Kenya",
-          "count": 1
-        }
-      ]
     }
   ]
 
@@ -116,7 +116,7 @@ correct_response_people = [
 correct_response_people_merged = [
     {
       "name": "Sarah",
-      "count": 4,
+      "count": 5,
       "assosciated_places": [
         {
           "name": "Kyoto",
@@ -134,8 +134,45 @@ correct_response_people_merged = [
       ]
     },
     {
-      "name": "Michaela",
+      "name": "Carlos",
       "count": 4,
+      "assosciated_places": [
+        {
+          "name": "Barcelona",
+          "count": 1
+        },
+        {
+          "name": "Brazil",
+          "count": 1
+        },
+        {
+          "name": "New Orleans",
+          "count": 1,
+          "area": "Louisiana"
+        }
+      ]
+    },
+    {
+      "name": "Ahmed",
+      "count": 2,
+      "assosciated_places": [
+        {
+          "name": "Barcelona",
+          "count": 1
+        },
+        {
+          "name": "Egypt",
+          "count": 1
+        },
+        {
+          "name": "Kenya",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "name": "Michaela",
+      "count": 2,
       "assosciated_places": [
         {
           "name": "Spain",
@@ -154,7 +191,7 @@ correct_response_people_merged = [
     },
     {
       "name": "Li Wei",
-      "count": 4,
+      "count": 2,
       "assosciated_places": [
         {
           "name": "Rome",
@@ -170,45 +207,9 @@ correct_response_people_merged = [
           "count": 1
         }
       ]
-    },
-    {
-      "name": "Ahmed",
-      "count": 3,
-      "assosciated_places": [
-        {
-          "name": "Barcelona",
-          "count": 1
-        },
-        {
-          "name": "Egypt",
-          "count": 1
-        },
-        {
-          "name": "Kenya",
-          "count": 1
-        }
-      ]
-    },
-    {
-      "name": "Carlos",
-      "count": 3,
-      "assosciated_places": [
-        {
-          "name": "Barcelona",
-          "count": 1
-        },
-        {
-          "name": "Brazil",
-          "count": 1
-        },
-        {
-          "name": "New Orleans",
-          "count": 1,
-          "area": "Louisiana"
-        }
-      ]
     }
   ]
+
 
 # Word span for search range to both sides of name
 span = 100

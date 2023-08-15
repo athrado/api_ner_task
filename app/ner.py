@@ -114,6 +114,7 @@ def extract_ne_counts(full_text, span=span, merge_appositions=False):
 
         # ---------------------- 
         
+        person_count[person] += 1
         person_loc[person] += locs
 
 
@@ -137,12 +138,6 @@ def extract_ne_counts(full_text, span=span, merge_appositions=False):
                                 else loc_counts 
                                 for loc_counts in loc_count[pers]]
                 
-    
-    # Sum up all the location counts
-    person_count = {person : sum([place.get('count', 0) 
-                                  for place in loc_count[person]]) 
-                                  for person in person_loc.keys()}
-
     # Sort people by occurences
     person_count = dict(
         sorted(person_count.items(), key=lambda item: item[1], reverse=True))
@@ -154,3 +149,11 @@ def extract_ne_counts(full_text, span=span, merge_appositions=False):
                            for person in person_count]
     
     return ner_count_response
+
+
+# If not interesting in person counts but total location counts:
+
+# # Sum up all the location counts 
+# person_count = {person : sum([place.get('count', 0) 
+#                               for place in loc_count[person]]) 
+#                               for person in person_loc.keys()}
